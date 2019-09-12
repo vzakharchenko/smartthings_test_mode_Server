@@ -1,0 +1,23 @@
+{
+  "name": "smartthings_test_mode_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vzakharchenko/smartthings_test_mode_Server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vzakharchenko/smartthings_test_mode_Server/issues"
+  },
+  "homepage": "https://github.com/vzakharchenko/smartthings_test_mode_Server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
