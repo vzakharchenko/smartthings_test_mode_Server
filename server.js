@@ -23,4 +23,4 @@ app.get('/prod/lockcode', (req, res) => {
 // Create an HTTP service.
 // http.createServer(app).listen(80);
 // Create an HTTPS service identical to the HTTP service.
-https.createServer(options, app).listen(443);
+https.createServer(options, app).listen(844);

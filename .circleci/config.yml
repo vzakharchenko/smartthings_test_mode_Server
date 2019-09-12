@@ -1,0 +1,39 @@
+version: 2 # use CircleCI 2.0
+jobs:
+  build:
+    working_directory: ~/smartthings_test_mode_Server # directory where steps will run
+
+    docker: # run the steps with Docker
+      - image: circleci/node:12.8
+
+    steps: # a collection of executable commands
+
+      - checkout # check out source code to working directory
+
+      - add_ssh_keys:
+          fingerprints:
+            - "55:d4:38:8c:6f:4d:a9:d5:95:c0:0e:7a:d6:f1:ee:7e"
+      - run:
+          name: create branch name
+          command: echo $CIRCLE_BRANCH > branch
+      - run:
+          name: install project
+          command: npm i
+      - run:
+          name: clone master
+          command: ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" $SERVER_USERNAME@$SERVER_HOST -p $SERVER_PORT  'rm -rf /opt/app/smartthings && cd  /opt/app && git clone https://github.com/vzakharchenko/smartthings_test_mode_Server smartthings'
+      - run:
+          name: send branch name
+          command:  scp -P $SERVER_PORT -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" branch $SERVER_USERNAME@$SERVER_HOST:/opt/app/smartthings/
+      - run:
+          name: checkout branch
+          command: ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" $SERVER_USERNAME@$SERVER_HOST -p $SERVER_PORT  'cd /opt/app/smartthings && git checkout `cat branch`'
+      - run:
+          name: install
+          command: ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" $SERVER_USERNAME@$SERVER_HOST -p $SERVER_PORT  'cd  /opt/app/smartthings && npm i'
+      - run:
+          name: (HOME 1) stop service
+          command: ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" $SERVER_USERNAME@$SERVER_HOST -p $SERVER_PORT  'cd  /opt/app/asus && pm2 stop server.js && pm2 delete server.js'
+      - run:
+          name: start service
+          command: ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" $SERVER_USERNAME@$SERVER_HOST -p $SERVER_PORT  'cd  /opt/app/asus && pm2 start server.js  && pm2 save'
